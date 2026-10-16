@@ -8,6 +8,7 @@ import com.example.ecoreport.repository.ReporteRepository
 import com.example.ecoreport.ui.screens.*
 import com.example.ecoreport.ui_comp.screens.PantallaInicio
 import com.example.ecoreport.viewmodel.ReporteViewModel
+import com.example.ecoreport.viewmodel.ReporteViewModelFactory
 import kotlinx.coroutines.launch
 
 @Composable
@@ -18,7 +19,9 @@ fun AppNavigation(
     val navController =
         rememberNavController()
 
-    val viewModel: ReporteViewModel = viewModel()
+    val viewModel: ReporteViewModel = viewModel(
+        factory = ReporteViewModelFactory(repository)
+    )
     val reportes =
         remember {
             mutableStateListOf<
@@ -129,6 +132,10 @@ fun AppNavigation(
                     )
                 },
 
+                onBusqueda = {texto ->
+                    viewModel.buscarPorNombre(texto)
+                },
+
                 volver = {
 
                     navController
@@ -145,7 +152,7 @@ fun AppNavigation(
                     reporteSeleccionado,
 
                 actualizarReporte = {
-                    reporteActualizado ->
+                        reporteActualizado ->
                     viewModel.actualizar(reporteActualizado)
                     reporteSeleccionado = reporteActualizado
                 },

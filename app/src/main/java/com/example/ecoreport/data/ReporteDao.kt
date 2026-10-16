@@ -1,5 +1,6 @@
 package com.example.ecoreport.data
 
+import android.R
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -29,4 +30,9 @@ interface ReporteDao {
     suspend fun eliminar(
         reporte: ReporteEntity
     )
+
+    @Query(
+        "SELECT * FROM reportes WHERE titulo LIKE '%' || :nombre || '%' ORDER BY id DESC"
+    )
+    suspend fun  obtenerPorNombre(nombre : String): List<ReporteEntity>
 }

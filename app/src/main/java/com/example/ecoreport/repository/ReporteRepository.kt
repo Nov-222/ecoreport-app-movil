@@ -22,4 +22,8 @@ class ReporteRepository (
     suspend fun eliminar(reporte: ReporteEntity) {
         reporteDao.eliminar(reporte)
     }
+
+    suspend fun buscarPorNombre(nombre : String) : List<ReporteEntity> {
+        return reporteDao.obtenerPorNombre(nombre)
+    }
 }
