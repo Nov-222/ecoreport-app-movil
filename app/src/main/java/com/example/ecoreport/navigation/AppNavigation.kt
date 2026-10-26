@@ -119,8 +119,7 @@ fun AppNavigation(
         ) {
 
             PantallaReportes(
-                reportes =
-                    viewModel.reportes,
+                viewModel = viewModel,
 
                 seleccionarReporte = { reporte ->
 

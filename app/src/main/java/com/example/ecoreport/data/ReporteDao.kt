@@ -35,4 +35,9 @@ interface ReporteDao {
         "SELECT * FROM reportes WHERE titulo LIKE '%' || :nombre || '%' ORDER BY id DESC"
     )
     suspend fun  obtenerPorNombre(nombre : String): List<ReporteEntity>
+
+    @Query(
+        "SELECT * FROM reportes WHERE (:estado = '' OR estado = :estado) AND (:categoria = '' OR categoria LIKE '%' || :categoria || '%') ORDER BY id DESC"
+    )
+    suspend fun obtenerFiltrados(estado: String, categoria: String): List<ReporteEntity>
 }

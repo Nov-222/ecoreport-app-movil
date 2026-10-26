@@ -26,4 +26,8 @@ class ReporteRepository (
     suspend fun buscarPorNombre(nombre : String) : List<ReporteEntity> {
         return reporteDao.obtenerPorNombre(nombre)
     }
+
+    suspend fun obtenerFiltrados(estado: String, categoria: String): List<ReporteEntity> {
+        return reporteDao.obtenerFiltrados(estado, categoria)
+    }
 }
