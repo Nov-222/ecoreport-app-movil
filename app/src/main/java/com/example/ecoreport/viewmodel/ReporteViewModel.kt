@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.ecoreport.data.ReporteEntity
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModelProvider
+import com.example.ecoreport.data.remote.ReporteDTO
 import com.example.ecoreport.repository.ReporteRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.collections.emptyList
 
 class ReporteViewModel (
     private val repository: ReporteRepository
@@ -20,6 +22,18 @@ class ReporteViewModel (
     val estadoFiltro: StateFlow<String> = _estadoFiltro.asStateFlow()
 
     private val _categoriaFiltro = MutableStateFlow("")
+
+    private val reportesRemotes = MutableStateFlow<List<ReporteDTO>>(emptyList())
+    // Agregamos esta línea para poder observar los reportes remotos desde la UI
+    val reportesRemotesView: StateFlow<List<ReporteDTO>> = reportesRemotes.asStateFlow()
+
+    private val _cargando = MutableStateFlow(false)
+
+    val cargando: StateFlow<Boolean> = _cargando
+
+    private val _error = MutableStateFlow<String?>(null)
+
+    val error: StateFlow<String?> = _error
     val categoriaFiltro: StateFlow<String> = _categoriaFiltro.asStateFlow()
 
     init {
@@ -49,6 +63,19 @@ class ReporteViewModel (
             reportes.clear()
 
             reportes.addAll(datos)
+        }
+    }
+
+    // Agregamos esta función para realizar la petición y volcarla en logs y variable
+    fun cargarReportesRemotos() {
+        viewModelScope.launch {
+            try {
+                val resultado = repository.obtenerReportesRemotos()
+                reportesRemotes.value = resultado
+                android.util.Log.d("API_DEBUG", "Reportes remotos obtenidos: $resultado")
+            } catch (e: Exception) {
+                android.util.Log.e("API_DEBUG", "Error al obtener remotos: ${e.message}")
+            }
         }
     }
 

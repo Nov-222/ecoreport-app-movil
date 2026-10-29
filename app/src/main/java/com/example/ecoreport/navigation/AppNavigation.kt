@@ -1,9 +1,16 @@
 package com.example.ecoreport.navigation
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.*
 import com.example.ecoreport.data.ReporteEntity
+import com.example.ecoreport.data.remote.ReporteApiService
 import com.example.ecoreport.repository.ReporteRepository
 import com.example.ecoreport.ui.screens.*
 import com.example.ecoreport.ui_comp.screens.PantallaInicio
@@ -13,7 +20,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AppNavigation(
-    repository: ReporteRepository
+    repository: ReporteRepository,
+    api: ReporteApiService
 ) {
 
     val navController =
@@ -50,6 +58,10 @@ fun AppNavigation(
         )
     }
 
+    suspend fun cargarReportesApi(){
+        val datos = api.obtenerReportes()
+    }
+
     LaunchedEffect(Unit) {
 
         cargarReportes()
@@ -83,6 +95,13 @@ fun AppNavigation(
                     navController
                         .navigate(
                             "reportes"
+                        )
+                },
+
+                irReportesApi = {
+                    navController
+                        .navigate(
+                            "reportes_api"
                         )
                 },
 
@@ -184,6 +203,39 @@ fun AppNavigation(
                         .popBackStack()
                 }
             )
+        }
+
+        composable(
+            "reportes_api"
+        ){
+            // Lógica añadida para mostrar los datos de la API
+            val listaRemota by viewModel.reportesRemotesView.collectAsState()
+
+            LaunchedEffect(Unit) {
+                viewModel.cargarReportesRemotos()
+            }
+
+            Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                Button(onClick = {
+                    navController.popBackStack()
+                }) {
+                    Text("Volver")
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = "Reportes de la API", style = MaterialTheme.typography.headlineMedium)
+
+                LazyColumn {
+                    items(listaRemota) { item ->
+                        Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text(text = item.titulo, style = MaterialTheme.typography.titleMedium)
+                                Text(text = item.descripcion)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

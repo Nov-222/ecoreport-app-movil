@@ -26,7 +26,12 @@ fun PantallaInicio(
         () -> Unit,
 
     irEstadisticas:
+        () -> Unit,
+
+    // Agregamos el parámetro para navegar a la API
+    irReportesApi:
         () -> Unit
+
 ) {
 
     val pendientes =
@@ -113,6 +118,21 @@ fun PantallaInicio(
 
             Text(
                 "VER REPORTES"
+            )
+        }
+
+        // Nuevo botón añadido para ir a la API
+        Button(
+            onClick =
+                irReportesApi,
+
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+        ) {
+
+            Text(
+                "VER REPORTES API"
             )
         }
 
