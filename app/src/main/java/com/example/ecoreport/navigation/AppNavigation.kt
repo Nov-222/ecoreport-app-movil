@@ -3,6 +3,7 @@ package com.example.ecoreport.navigation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -208,14 +209,17 @@ fun AppNavigation(
         composable(
             "reportes_api"
         ){
-            // Lógica añadida para mostrar los datos de la API
             val listaRemota by viewModel.reportesRemotesView.collectAsState()
 
             LaunchedEffect(Unit) {
                 viewModel.cargarReportesRemotos()
             }
 
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+            ) {
                 Button(onClick = {
                     navController.popBackStack()
                 }) {
@@ -223,13 +227,34 @@ fun AppNavigation(
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(text = "Reportes de la API", style = MaterialTheme.typography.headlineMedium)
 
-                LazyColumn {
-                    items(listaRemota) { item ->
-                        Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                Text(
+                    text = "Reportes Remotos",
+                    style = MaterialTheme.typography.headlineLarge
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    itemsIndexed(listaRemota) { index, item ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                        ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                Text(text = item.titulo, style = MaterialTheme.typography.titleMedium)
+                                // Muestra el número de orden (ej. 1., 2., 3., etc.)
+                                Text(
+                                    text = "Reporte #${index + 1}",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = item.titulo,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
                                 Text(text = item.descripcion)
                             }
                         }
