@@ -16,138 +16,75 @@ import com.example.ecoreport.data.ReporteEntity
 
 @Composable
 fun PantallaInicio(
-    reportes:
-    List<ReporteEntity>,
-
-    irRegistro:
-        () -> Unit,
-
-    irReportes:
-        () -> Unit,
-
-    irEstadisticas:
-        () -> Unit,
-
-    // Agregamos el parámetro para navegar a la API
-    irReportesApi:
-        () -> Unit
-
+    reportes: List<ReporteEntity>,
+    irRegistro: () -> Unit,
+    irRegistroRemoto: () -> Unit, // <-- Añadido para nuevo reporte remoto
+    irReportes: () -> Unit,
+    irEstadisticas: () -> Unit,
+    irReportesApi: () -> Unit
 ) {
+    val pendientes = reportes.count { it.estado == "PENDIENTE" }
+    val resueltos = reportes.count { it.estado == "RESUELTO" }
 
-    val pendientes =
-        reportes.count {
-            it.estado ==
-                    "PENDIENTE"
-        }
-
-    val resueltos =
-        reportes.count {
-            it.estado ==
-                    "RESUELTO"
-        }
-
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(20.dp)
     ) {
-
         Text(
-            text =
-                "EcoReport",
-
-            style =
-                MaterialTheme
-                    .typography
-                    .headlineLarge
+            text = "EcoReport",
+            style = MaterialTheme.typography.headlineLarge
         )
 
         Text(
-            text =
-                "Reportes ambientales"
+            text = "Reportes ambientales"
         )
 
-        Spacer(
-            Modifier.height(
-                24.dp
-            )
-        )
+        Spacer(Modifier.height(24.dp))
 
-        Text(
-            "Total: ${
-                reportes.size
-            }"
-        )
+        Text("Total Locales: ${reportes.size}")
+        Text("Pendientes Locales: $pendientes")
+        Text("Resueltos Locales: $resueltos")
 
-        Text(
-            "Pendientes: $pendientes"
-        )
+        Spacer(Modifier.height(24.dp))
 
-        Text(
-            "Resueltos: $resueltos"
-        )
-
-        Spacer(
-            Modifier.height(
-                24.dp
-            )
-        )
-
-        Button (
-            onClick =
-                irRegistro,
-
-            modifier =
-                Modifier
-                    .fillMaxWidth()
+        // Botón para reporte local
+        Button(
+            onClick = irRegistro,
+            modifier = Modifier.fillMaxWidth()
         ) {
+            Text("NUEVO REPORTE LOCAL")
+        }
 
-            Text(
-                "NUEVO REPORTE"
-            )
+        // Botón para reporte remoto (API)
+        Button(
+            onClick = irRegistroRemoto,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("NUEVO REPORTE REMOTO")
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        Button(
+            onClick = irReportes,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("VER REPORTES LOCALES")
         }
 
         Button(
-            onClick =
-                irReportes,
-
-            modifier =
-                Modifier
-                    .fillMaxWidth()
+            onClick = irReportesApi,
+            modifier = Modifier.fillMaxWidth()
         ) {
-
-            Text(
-                "VER REPORTES"
-            )
-        }
-
-        // Nuevo botón añadido para ir a la API
-        Button(
-            onClick =
-                irReportesApi,
-
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-        ) {
-
-            Text(
-                "VER REPORTES API"
-            )
+            Text("VER REPORTES REMOTOS")
         }
 
         Button(
-            onClick =
-                irEstadisticas,
-
-            modifier =
-                Modifier
-                    .fillMaxWidth()
+            onClick = irEstadisticas,
+            modifier = Modifier.fillMaxWidth()
         ) {
-
-            Text(
-                "ESTADÍSTICAS"
-            )
+            Text("ESTADÍSTICAS")
         }
     }
 }
